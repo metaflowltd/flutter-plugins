@@ -7,8 +7,10 @@ class HealthValue extends Serializable {
 
   @override
   Function get fromJsonFunction => _$HealthValueFromJson;
+
   factory HealthValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as HealthValue;
+
   @override
   Map<String, dynamic> toJson() => _$HealthValueToJson(this);
 }
@@ -20,22 +22,30 @@ class HealthValue extends Serializable {
 /// * [numericValue] - a [num] value for the [HealthDataPoint]
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class NumericHealthValue extends HealthValue {
+  /// uuid of the sampled data.
+  String? uuid;
+
   /// A [num] value for the [HealthDataPoint].
   num numericValue;
 
-  NumericHealthValue({required this.numericValue});
+  NumericHealthValue({required this.numericValue, this.uuid});
 
   /// Create a [NumericHealthValue] based on a health data point from native data format.
   factory NumericHealthValue.fromHealthDataPoint(dynamic dataPoint) =>
-      NumericHealthValue(numericValue: dataPoint['value'] as num? ?? 0);
+      NumericHealthValue(
+          numericValue: dataPoint['value'] as num? ?? 0,
+          uuid: dataPoint['uuid'] != null ? dataPoint['uuid'] as String : null);
 
   @override
-  String toString() => '$runtimeType - numericValue: $numericValue';
+  String toString() =>
+      '$runtimeType - numericValue: $numericValue, uuid: $uuid';
 
   @override
   Function get fromJsonFunction => _$NumericHealthValueFromJson;
+
   factory NumericHealthValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as NumericHealthValue;
+
   @override
   Map<String, dynamic> toJson() => _$NumericHealthValueToJson(this);
 
@@ -55,6 +65,9 @@ class NumericHealthValue extends HealthValue {
 /// * [rightEarSensitivities] threshold in decibel for the left ear
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class AudiogramHealthValue extends HealthValue {
+  /// UUID of the sampled data.
+  String uuid;
+
   /// Array of frequencies of the test.
   List<num> frequencies;
 
@@ -65,6 +78,7 @@ class AudiogramHealthValue extends HealthValue {
   List<num> rightEarSensitivities;
 
   AudiogramHealthValue({
+    required this.uuid,
     required this.frequencies,
     required this.leftEarSensitivities,
     required this.rightEarSensitivities,
@@ -73,6 +87,7 @@ class AudiogramHealthValue extends HealthValue {
   /// Create a [AudiogramHealthValue] based on a health data point from native data format.
   factory AudiogramHealthValue.fromHealthDataPoint(dynamic dataPoint) =>
       AudiogramHealthValue(
+          uuid: dataPoint['uuid'] as String,
           frequencies: List<num>.from(dataPoint['frequencies'] as List),
           leftEarSensitivities:
               List<num>.from(dataPoint['leftEarSensitivities'] as List),
@@ -80,27 +95,31 @@ class AudiogramHealthValue extends HealthValue {
               List<num>.from(dataPoint['rightEarSensitivities'] as List));
 
   @override
-  String toString() => """$runtimeType - frequencies: ${frequencies.toString()},
+  String toString() =>
+      """$runtimeType - uuid: $uuid, frequencies: ${frequencies.toString()},
     left ear sensitivities: ${leftEarSensitivities.toString()},
     right ear sensitivities: ${rightEarSensitivities.toString()}""";
 
   @override
   Function get fromJsonFunction => _$AudiogramHealthValueFromJson;
+
   factory AudiogramHealthValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as AudiogramHealthValue;
+
   @override
   Map<String, dynamic> toJson() => _$AudiogramHealthValueToJson(this);
 
   @override
   bool operator ==(Object other) =>
       other is AudiogramHealthValue &&
+      uuid == other.uuid &&
       listEquals(frequencies, other.frequencies) &&
       listEquals(leftEarSensitivities, other.leftEarSensitivities) &&
       listEquals(rightEarSensitivities, other.rightEarSensitivities);
 
   @override
-  int get hashCode =>
-      Object.hash(frequencies, leftEarSensitivities, rightEarSensitivities);
+  int get hashCode => Object.hash(
+      uuid, frequencies, leftEarSensitivities, rightEarSensitivities);
 }
 
 /// A [HealthValue] object for workouts
@@ -113,6 +132,9 @@ class AudiogramHealthValue extends HealthValue {
 /// * [totalDistanceUnit] - the unit of the total distance
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class WorkoutHealthValue extends HealthValue {
+  /// UUID of the sampled data.
+  String? uuid;
+
   /// The type of the workout.
   HealthWorkoutActivityType workoutActivityType;
 
@@ -142,6 +164,7 @@ class WorkoutHealthValue extends HealthValue {
 
   WorkoutHealthValue(
       {required this.workoutActivityType,
+      this.uuid,
       this.totalEnergyBurned,
       this.totalEnergyBurnedUnit,
       this.totalDistance,
@@ -152,6 +175,7 @@ class WorkoutHealthValue extends HealthValue {
   /// Create a [WorkoutHealthValue] based on a health data point from native data format.
   factory WorkoutHealthValue.fromHealthDataPoint(dynamic dataPoint) =>
       WorkoutHealthValue(
+          uuid: dataPoint['uuid'] != null ? dataPoint['uuid'] as String : null,
           workoutActivityType: HealthWorkoutActivityType.values.firstWhere(
               (element) => element.name == dataPoint['workoutActivityType']),
           totalEnergyBurned: dataPoint['totalEnergyBurned'] != null
@@ -178,14 +202,16 @@ class WorkoutHealthValue extends HealthValue {
 
   @override
   Function get fromJsonFunction => _$WorkoutHealthValueFromJson;
+
   factory WorkoutHealthValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as WorkoutHealthValue;
+
   @override
   Map<String, dynamic> toJson() => _$WorkoutHealthValueToJson(this);
 
   @override
-  String toString() =>
-      """$runtimeType - workoutActivityType: ${workoutActivityType.name},
+  String toString() => """$runtimeType - uuid: $uuid,
+           workoutActivityType: ${workoutActivityType.name},
            totalEnergyBurned: $totalEnergyBurned,
            totalEnergyBurnedUnit: ${totalEnergyBurnedUnit?.name},
            totalDistance: $totalDistance,
@@ -196,6 +222,7 @@ class WorkoutHealthValue extends HealthValue {
   @override
   bool operator ==(Object other) =>
       other is WorkoutHealthValue &&
+      uuid == other.uuid &&
       workoutActivityType == other.workoutActivityType &&
       totalEnergyBurned == other.totalEnergyBurned &&
       totalEnergyBurnedUnit == other.totalEnergyBurnedUnit &&
@@ -206,6 +233,7 @@ class WorkoutHealthValue extends HealthValue {
 
   @override
   int get hashCode => Object.hash(
+      uuid,
       workoutActivityType,
       totalEnergyBurned,
       totalEnergyBurnedUnit,
@@ -224,6 +252,9 @@ class WorkoutHealthValue extends HealthValue {
 /// * [classification] - an [ElectrocardiogramClassification]
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class ElectrocardiogramHealthValue extends HealthValue {
+  /// UUID of the sampled data.
+  String? uuid;
+
   /// An array of [ElectrocardiogramVoltageValue]s.
   List<ElectrocardiogramVoltageValue> voltageValues;
 
@@ -238,6 +269,7 @@ class ElectrocardiogramHealthValue extends HealthValue {
 
   ElectrocardiogramHealthValue({
     required this.voltageValues,
+    this.uuid,
     this.averageHeartRate,
     this.samplingFrequency,
     this.classification,
@@ -245,8 +277,10 @@ class ElectrocardiogramHealthValue extends HealthValue {
 
   @override
   Function get fromJsonFunction => _$ElectrocardiogramHealthValueFromJson;
+
   factory ElectrocardiogramHealthValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as ElectrocardiogramHealthValue;
+
   @override
   Map<String, dynamic> toJson() => _$ElectrocardiogramHealthValueToJson(this);
 
@@ -257,6 +291,7 @@ class ElectrocardiogramHealthValue extends HealthValue {
             .map((voltageValue) =>
                 ElectrocardiogramVoltageValue.fromHealthDataPoint(voltageValue))
             .toList(),
+        uuid: dataPoint['uuid'] != null ? dataPoint['uuid'] as String : null,
         averageHeartRate: dataPoint['averageHeartRate'] as num?,
         samplingFrequency: dataPoint['samplingFrequency'] as double?,
         classification: ElectrocardiogramClassification.values
@@ -266,6 +301,7 @@ class ElectrocardiogramHealthValue extends HealthValue {
   @override
   bool operator ==(Object other) =>
       other is ElectrocardiogramHealthValue &&
+      uuid == other.uuid &&
       voltageValues == other.voltageValues &&
       averageHeartRate == other.averageHeartRate &&
       samplingFrequency == other.samplingFrequency &&
@@ -273,11 +309,11 @@ class ElectrocardiogramHealthValue extends HealthValue {
 
   @override
   int get hashCode => Object.hash(
-      voltageValues, averageHeartRate, samplingFrequency, classification);
+      uuid, voltageValues, averageHeartRate, samplingFrequency, classification);
 
   @override
   String toString() =>
-      '$runtimeType - ${voltageValues.length} values, $averageHeartRate BPM, $samplingFrequency HZ, $classification';
+      '$runtimeType - uuid $uuid ${voltageValues.length} values, $averageHeartRate BPM, $samplingFrequency HZ, $classification';
 }
 
 /// Single voltage value belonging to a [ElectrocardiogramHealthValue]
@@ -303,8 +339,10 @@ class ElectrocardiogramVoltageValue extends HealthValue {
 
   @override
   Function get fromJsonFunction => _$ElectrocardiogramVoltageValueFromJson;
+
   factory ElectrocardiogramVoltageValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as ElectrocardiogramVoltageValue;
+
   @override
   Map<String, dynamic> toJson() => _$ElectrocardiogramVoltageValueToJson(this);
 
@@ -333,6 +371,9 @@ class ElectrocardiogramVoltageValue extends HealthValue {
 ///  * [mealType] - the type of meal
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class NutritionHealthValue extends HealthValue {
+  /// UUID of the sampled data.
+  String? uuid;
+
   /// The type of meal.
   String? mealType;
 
@@ -355,6 +396,7 @@ class NutritionHealthValue extends HealthValue {
   double? caffeine;
 
   NutritionHealthValue({
+    this.uuid,
     this.mealType,
     this.protein,
     this.calories,
@@ -366,14 +408,17 @@ class NutritionHealthValue extends HealthValue {
 
   @override
   Function get fromJsonFunction => _$NutritionHealthValueFromJson;
+
   factory NutritionHealthValue.fromJson(Map<String, dynamic> json) =>
       FromJsonFactory().fromJson(json) as NutritionHealthValue;
+
   @override
   Map<String, dynamic> toJson() => _$NutritionHealthValueToJson(this);
 
   /// Create a [NutritionHealthValue] based on a health data point from native data format.
   factory NutritionHealthValue.fromHealthDataPoint(dynamic dataPoint) =>
       NutritionHealthValue(
+        uuid: dataPoint['uuid'] != null ? dataPoint['uuid'] as String : null,
         mealType: dataPoint['mealType'] as String,
         protein: dataPoint['protein'] != null
             ? (dataPoint['protein'] as num).toDouble()
@@ -394,7 +439,8 @@ class NutritionHealthValue extends HealthValue {
       );
 
   @override
-  String toString() => """$runtimeType - protein: ${protein.toString()},
+  String toString() =>
+      """$runtimeType - uuid: $uuid protein: ${protein.toString()},
     calories: ${calories.toString()},
     fat: ${fat.toString()},
     name: ${name.toString()},
@@ -405,6 +451,7 @@ class NutritionHealthValue extends HealthValue {
   @override
   bool operator ==(Object other) =>
       other is NutritionHealthValue &&
+      other.uuid == uuid &&
       other.protein == protein &&
       other.calories == calories &&
       other.fat == fat &&
@@ -415,7 +462,7 @@ class NutritionHealthValue extends HealthValue {
 
   @override
   int get hashCode =>
-      Object.hash(protein, calories, fat, name, carbs, caffeine);
+      Object.hash(uuid, protein, calories, fat, name, carbs, caffeine);
 }
 
 enum MenstrualFlow {

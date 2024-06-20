@@ -104,6 +104,9 @@ const _$HealthDataTypeEnumMap = {
   HealthDataType.HEADACHE_SEVERE: 'HEADACHE_SEVERE',
   HealthDataType.HEADACHE_UNSPECIFIED: 'HEADACHE_UNSPECIFIED',
   HealthDataType.NUTRITION: 'NUTRITION',
+  HealthDataType.GENDER: 'GENDER',
+  HealthDataType.BIRTH_DATE: 'BIRTH_DATE',
+  HealthDataType.BLOOD_TYPE: 'BLOOD_TYPE',
   HealthDataType.MENSTRUATION_FLOW: 'MENSTRUATION_FLOW',
   HealthDataType.HIGH_HEART_RATE_EVENT: 'HIGH_HEART_RATE_EVENT',
   HealthDataType.LOW_HEART_RATE_EVENT: 'LOW_HEART_RATE_EVENT',
@@ -190,6 +193,7 @@ Map<String, dynamic> _$HealthValueToJson(HealthValue instance) {
 NumericHealthValue _$NumericHealthValueFromJson(Map<String, dynamic> json) =>
     NumericHealthValue(
       numericValue: json['numeric_value'] as num,
+      uuid: json['uuid'] as String?,
     )..$type = json['__type'] as String?;
 
 Map<String, dynamic> _$NumericHealthValueToJson(NumericHealthValue instance) {
@@ -202,6 +206,7 @@ Map<String, dynamic> _$NumericHealthValueToJson(NumericHealthValue instance) {
   }
 
   writeNotNull('__type', instance.$type);
+  writeNotNull('uuid', instance.uuid);
   val['numeric_value'] = instance.numericValue;
   return val;
 }
@@ -209,6 +214,7 @@ Map<String, dynamic> _$NumericHealthValueToJson(NumericHealthValue instance) {
 AudiogramHealthValue _$AudiogramHealthValueFromJson(
         Map<String, dynamic> json) =>
     AudiogramHealthValue(
+      uuid: json['uuid'] as String,
       frequencies:
           (json['frequencies'] as List<dynamic>).map((e) => e as num).toList(),
       leftEarSensitivities: (json['left_ear_sensitivities'] as List<dynamic>)
@@ -230,6 +236,7 @@ Map<String, dynamic> _$AudiogramHealthValueToJson(
   }
 
   writeNotNull('__type', instance.$type);
+  val['uuid'] = instance.uuid;
   val['frequencies'] = instance.frequencies;
   val['left_ear_sensitivities'] = instance.leftEarSensitivities;
   val['right_ear_sensitivities'] = instance.rightEarSensitivities;
@@ -240,6 +247,7 @@ WorkoutHealthValue _$WorkoutHealthValueFromJson(Map<String, dynamic> json) =>
     WorkoutHealthValue(
       workoutActivityType: $enumDecode(
           _$HealthWorkoutActivityTypeEnumMap, json['workout_activity_type']),
+      uuid: json['uuid'] as String?,
       totalEnergyBurned: (json['total_energy_burned'] as num?)?.toInt(),
       totalEnergyBurnedUnit: $enumDecodeNullable(
           _$HealthDataUnitEnumMap, json['total_energy_burned_unit']),
@@ -261,6 +269,7 @@ Map<String, dynamic> _$WorkoutHealthValueToJson(WorkoutHealthValue instance) {
   }
 
   writeNotNull('__type', instance.$type);
+  writeNotNull('uuid', instance.uuid);
   val['workout_activity_type'] =
       _$HealthWorkoutActivityTypeEnumMap[instance.workoutActivityType]!;
   writeNotNull('total_energy_burned', instance.totalEnergyBurned);
@@ -436,6 +445,7 @@ ElectrocardiogramHealthValue _$ElectrocardiogramHealthValueFromJson(
           .map((e) =>
               ElectrocardiogramVoltageValue.fromJson(e as Map<String, dynamic>))
           .toList(),
+      uuid: json['uuid'] as String?,
       averageHeartRate: json['average_heart_rate'] as num?,
       samplingFrequency: (json['sampling_frequency'] as num?)?.toDouble(),
       classification: $enumDecodeNullable(
@@ -453,6 +463,7 @@ Map<String, dynamic> _$ElectrocardiogramHealthValueToJson(
   }
 
   writeNotNull('__type', instance.$type);
+  writeNotNull('uuid', instance.uuid);
   val['voltage_values'] = instance.voltageValues;
   writeNotNull('average_heart_rate', instance.averageHeartRate);
   writeNotNull('sampling_frequency', instance.samplingFrequency);
@@ -501,6 +512,7 @@ Map<String, dynamic> _$ElectrocardiogramVoltageValueToJson(
 NutritionHealthValue _$NutritionHealthValueFromJson(
         Map<String, dynamic> json) =>
     NutritionHealthValue(
+      uuid: json['uuid'] as String?,
       mealType: json['meal_type'] as String?,
       protein: (json['protein'] as num?)?.toDouble(),
       calories: (json['calories'] as num?)?.toDouble(),
@@ -521,6 +533,7 @@ Map<String, dynamic> _$NutritionHealthValueToJson(
   }
 
   writeNotNull('__type', instance.$type);
+  writeNotNull('uuid', instance.uuid);
   writeNotNull('meal_type', instance.mealType);
   writeNotNull('protein', instance.protein);
   writeNotNull('calories', instance.calories);
