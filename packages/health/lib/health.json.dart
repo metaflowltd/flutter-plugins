@@ -11,6 +11,7 @@ void _registerFromJsonFunctions() {
     HealthValue(),
     NumericHealthValue(numericValue: 12),
     AudiogramHealthValue(
+      uuid: '',
       frequencies: [],
       leftEarSensitivities: [],
       rightEarSensitivities: [],
