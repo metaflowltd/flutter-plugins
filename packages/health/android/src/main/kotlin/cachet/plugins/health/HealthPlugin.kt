@@ -3995,7 +3995,8 @@ class HealthPlugin(private var channel: MethodChannel? = null) :
                                         BASAL_ENERGY_BURNED to BasalMetabolicRateRecord::class,
                                         FLIGHTS_CLIMBED to FloorsClimbedRecord::class,
                                         RESPIRATORY_RATE to RespiratoryRateRecord::class,
-                                        TOTAL_CALORIES_BURNED to TotalCaloriesBurnedRecord::class
+                                        TOTAL_CALORIES_BURNED to TotalCaloriesBurnedRecord::class,
+                                        MENSTRUATION_FLOW to MenstruationFlowRecord::class
                                         // MOVE_MINUTES to TODO: Find alternative?
                                         // TODO: Implement remaining types
                                         // "ActiveCaloriesBurned" to

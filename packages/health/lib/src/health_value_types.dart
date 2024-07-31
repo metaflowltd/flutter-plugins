@@ -513,12 +513,15 @@ enum MenstrualFlow {
 /// * [isStartOfCycle] - indicator whether or not this occurrence is the first day of the menstrual cycle
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MenstruationFlowHealthValue extends HealthValue {
+  /// UUID of the sampled data.
+  final String? uuid;
   final MenstrualFlow? flow;
   final bool? isStartOfCycle;
   final DateTime dateTime;
   final bool selfReported;
 
   MenstruationFlowHealthValue({
+    this.uuid,
     required this.flow,
     required this.isStartOfCycle,
     required this.dateTime,
@@ -527,7 +530,7 @@ class MenstruationFlowHealthValue extends HealthValue {
 
   @override
   String toString() =>
-      "flow: ${flow?.name}, startOfCycle: $isStartOfCycle, dateTime: $dateTime, selfReported: $selfReported";
+      "uuid: $uuid flow: ${flow?.name}, startOfCycle: $isStartOfCycle, dateTime: $dateTime, selfReported: $selfReported";
 
   factory MenstruationFlowHealthValue.fromHealthDataPoint(dynamic dataPoint) {
     // Parse flow value safely
@@ -540,6 +543,7 @@ class MenstruationFlowHealthValue extends HealthValue {
     }
 
     return MenstruationFlowHealthValue(
+      uuid: dataPoint['uuid'] as String?,
       flow: menstrualFlow,
       isStartOfCycle:
           dataPoint['metadata']?['HKMetadataKeyMenstrualCycleStart'] as bool?,
